@@ -179,8 +179,10 @@ sign('HOME ♥',x0+w/2,y0-6*S,9*S,'#a8322a');g.textAlign='center';
 for(let i=0;i<cats.length;i++){const b=bowlPos(i);E(b.x,b.y+4*S,10*S,4*S,'#3d7bd9');E(b.x,b.y+2.5*S,8*S,2.5*S,i<fed?'#c98a4b':'#2c5aa8')}
 for(const ct of cats)if(ct.st=='fed'){const b=bowlPos(ct.bowl);ct.x=b.x;ct.y=b.y-4*S;ct.a=0;ct.smug=9}
 if(line.length&&t%40<26){g.fillStyle='#ffe066';g.font=fnt(13*S);g.fillText('▲ supper is ready! ▲',cp.x+cp.w/2,cp.y+cp.h+Math.max(58*S,40*S+Math.max(13*S,F)*.6+2*DPR))}}
-function chickenArt(x,y,sc,seed,face,scared,pop){const s=S*sc,b=Math.abs(Math.sin(t*.25+seed))*(scared?6:3.5)*s,sq=1+Math.sin(t*.5+seed)*.07+(pop||0)*.03;g.save();g.translate(x,y-b);g.scale(face<0?-1/sq:1/sq,sq);
-E(0,8*s,9*s,3*s,'rgba(0,0,0,.15)');g.fillStyle='#f5a623';g.fillRect(-4*s,4*s,2*s,6*s);g.fillRect(2*s,4*s,2*s,6*s);
+/* leg rig (Grey Heart leg check, Oct 2026): chicken legs step from distance moved, ease to standing when stopped */
+function ckStep(o,x,y,s){if(!o)return 0;const d=o._px===undefined?0:Math.hypot(x-o._px,y-o._py);o._px=x;o._py=y;o._ph=(o._ph||0)+d/(7*s);o._la=(o._la||0)+((d>.15*s?1:0)-(o._la||0))*.2;return o._la<.02?0:o._la}
+function chickenArt(x,y,sc,seed,face,scared,pop,obj){const s=S*sc,ca=ckStep(obj,x,y,s),cph=obj?obj._ph||0:0,b=Math.abs(Math.sin(t*.25+seed))*(scared?6:3.5)*s,sq=1+Math.sin(t*.5+seed)*.07+(pop||0)*.03;g.save();g.translate(x,y-b);g.scale(face<0?-1/sq:1/sq,sq);
+E(0,8*s,9*s,3*s,'rgba(0,0,0,.15)');g.fillStyle='#f5a623';for(const k of [-1,1]){const a=Math.sin(cph+(k>0?Math.PI:0))*.7*ca,lf=Math.max(0,Math.cos(cph+(k>0?Math.PI:0)))*1.6*s*ca;g.save();g.translate(k*3*s,4*s-lf);g.rotate(-a);g.fillRect(-1*s,0,2*s,6*s);g.fillRect(-.5*s,5.2*s,3.5*s,1.2*s);g.restore()}
 E(0,0,11*s,8*s,'#fffaf0');E(-3*s,0,6*s,4*s,'#efe6d6',-.3);E(7*s,-8*s,6*s,6*s,'#fffaf0');
 g.fillStyle='#e53935';g.beginPath();g.arc(6*s,-14*s,2.5*s,0,TAU);g.arc(9*s,-13.5*s,2.2*s,0,TAU);g.fill();E(10*s,-4*s,1.6*s,2.5*s,'#e53935');
 g.fillStyle='#f5a623';g.beginPath();g.moveTo(12*s,-9*s);g.lineTo(17*s,-7.5*s);g.lineTo(12*s,-6*s);g.fill();if(scared){E(8.5*s,-9*s,2.4*s,2.4*s,'#fff');E(8.8*s,-9*s,1.1*s,1.1*s,'#222');g.fillStyle='#e53935';g.font=`bold ${12*s}px sans-serif`;g.textAlign='center';g.fillText('!',7*s,-20*s)}else if(t%180<8)g.fillRect(7.5*s,-9*s,2.5*s,.8*s);else E(8.5*s,-9*s,1.2*s,1.2*s,'#222');
@@ -193,7 +195,7 @@ const eye=ct.col=='#333'||ct.col=='#555'?'#c6ff6a':'#2e7d32';if(ct.smug>0){g.str
 if(ct.col=='#e8e0d0'){E(-4*s,-2*s,4*s,3*s,'#f39c34');E(3*s,1*s,3*s,2.5*s,'#333')}
 g.strokeStyle='rgba(0,0,0,.4)';g.lineWidth=.8*s;g.beginPath();g.moveTo(14*s,-5*s);g.lineTo(21*s,-6*s);g.moveTo(14*s,-4*s);g.lineTo(21*s,-3*s);g.stroke();g.restore()}
 function grannyArt(){const s=S;if(inv>0&&t%10<5&&state=='play')return;g.save();const st=Math.sin(gr.step/(6*S)),hop=Math.abs(st)*3*S,sq=1+st*st*.06-.03;g.translate(gr.x,gr.y-hop);const f=Math.cos(gr.a)<-.1?-1:1;g.scale(f/sq,sq);
-E(0,20*s,14*s,4*s,'rgba(0,0,0,.2)');g.fillStyle='#5d4037';g.fillRect(-6*s,12*s+st*2*s,5*s,7*s);g.fillRect(2*s,12*s-st*2*s,5*s,7*s);
+E(0,20*s,14*s,4*s,'rgba(0,0,0,.2)');g.fillStyle='#5d4037';{const ga=state=='play'||state=='title'?1:0,cs=Math.cos(gr.step/(6*S));for(const k of [-1,1]){const a=k*st*.55*ga,lf=Math.max(0,k*cs)*2.2*s*ga;g.save();g.translate(k*4*s,9*s-lf);g.rotate(-a);g.fillRect(-2.5*s,0,5*s,10*s);g.fillStyle='#3e2723';g.fillRect(-2.5*s,8*s,7*s,2.5*s);g.fillStyle='#5d4037';g.restore()}}
 g.fillStyle='#8e5bd1';g.beginPath();g.moveTo(-8*s,-6*s);g.lineTo(8*s,-6*s);g.lineTo(13*s,14*s);g.lineTo(-13*s,14*s);g.closePath();g.fill();
 g.fillStyle='#fff';g.beginPath();g.moveTo(-5*s,-3*s);g.lineTo(5*s,-3*s);g.lineTo(8*s,12*s);g.lineTo(-8*s,12*s);g.closePath();g.fill();g.fillStyle='#ff9ec4';g.fillRect(-3*s,4*s,6*s,4*s);
 g.strokeStyle='#ffd7b5';g.lineWidth=3.5*s;g.lineCap='round';g.beginPath();g.moveTo(-8*s,-3*s);g.lineTo(-12*s,4*s+st*2*s);g.moveTo(8*s,-3*s);g.lineTo(12*s,4*s-st*2*s);g.stroke();
@@ -216,8 +218,8 @@ const how=['Granny never stops walking — she\'s on a mission!','Swipe (or tap 
 const hLand=W>H*1.3,hFs=Math.max(16*DPR,Math.min(15*S,W*.038));/* landscape: two columns so the how-to text stays >=16px */
 how.forEach((h,i)=>{g.font=`bold ${hFs}px "Comic Sans MS",sans-serif`;g.fillStyle='#5a2a1a';g.textAlign='center';if(hLand)g.fillText(h,W*(i<4?.285:.715),H*.325+tD+(i%4)*hFs*1.28,W*.42);else g.fillText(h,W/2,H*.285+i*H*.0305,W*.84)});
 txt(t%60<40?'Tap to start!':'',H*.76,Math.max(26,16*DPR/S));if(best)txt('Best: '+best,H*.82,18,'#fff3c4');g.restore();return}
-for(const ch of chickens)chickenArt(ch.x,ch.y,1,ch.wob,Math.cos(ch.a)<0?-1:1,ch.st=='scared')
-for(let i=line.length-1;i>=0;i--){const ch=line[i];if(supper){ch.a=(ch.vx||0)<0?Math.PI:0;catArt(ch);continue}chickenArt(ch.x,ch.y,1,i,(ch.vx||0)<0?-1:1,0,ch.pop>0?ch.pop--:0)}
+for(const ch of chickens)chickenArt(ch.x,ch.y,1,ch.wob,Math.cos(ch.a)<0?-1:1,ch.st=='scared',0,ch)
+for(let i=line.length-1;i>=0;i--){const ch=line[i];if(supper){ch.a=(ch.vx||0)<0?Math.PI:0;catArt(ch);continue}chickenArt(ch.x,ch.y,1,i,(ch.vx||0)<0?-1:1,0,ch.pop>0?ch.pop--:0,ch)}
 grannyArt();for(const ct of cats)if(ct.st!='line')catArt(ct);
 for(const p of parts){if(p.kind=='h'){g.globalAlpha=Math.min(1,p.l/30);g.font=`${12*S}px sans-serif`;g.textAlign='center';g.fillText('💕',p.x,p.y);g.globalAlpha=1;continue}if(p.kind=='s'){g.globalAlpha=Math.min(1,p.l/25);star(p.x,p.y,(3+2*Math.sin(p.l*.5))*S,p.c);g.globalAlpha=1;continue}if(p.kind=='f'){g.globalAlpha=p.l/50;E(p.x,p.y,4*S,2*S,'#fff',p.l*.3)}else{g.globalAlpha=p.l/30;chickenArt(p.x,p.y,.7,0,1)}g.globalAlpha=1}
 for(const p of pops){g.globalAlpha=Math.min(1,p.l/30);g.font=fnt(15*S);g.textAlign='center';g.lineJoin='round';g.lineWidth=4*S;g.strokeStyle='#5a2a1a';g.strokeText(p.s,p.x,p.y);g.fillStyle='#ffe066';g.fillText(p.s,p.x,p.y);g.globalAlpha=1}
